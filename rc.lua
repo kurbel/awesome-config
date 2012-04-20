@@ -1,5 +1,3 @@
--- geekounet's awesome 3 configuration file
-
 -- {{{ Initial stuffs
 
 ostype = io.popen("uname -s"):read()
@@ -63,6 +61,8 @@ terminal_exec = terminal .. " -e "
 editor        = "vim"
 editor_cmd    = terminal_exec .. editor
 im            = "gajim"
+video         = "mplayer"
+audio         = "deadbeef"
 virtual       = "VirtualBox"
 virtual_alt   = "aqemu"
 -- xlock         = "xset dpms force off ; xtrlock"
@@ -863,6 +863,7 @@ globalkeys = awful.util.table.join(
   awful.key(k_m,  "b",      function () awful.util.spawn(browser) end),
   awful.key(k_m,  "i",      function () awful.util.spawn(im) end),
   awful.key(k_m,  "g",      function () awful.util.spawn(im) end),
+  awful.key(k_m,  "d",      function () awful.util.spawn(audio) end),
   awful.key(k_m,  "t",      function () awful.util.spawn(virtual) end),
   awful.key(k_m,  "r",      function () awful.util.spawn(virtual_alt) end),
   awful.key(k_mc, "End",    function () awful.util.spawn(xlock) end),
