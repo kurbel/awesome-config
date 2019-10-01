@@ -2,12 +2,28 @@ awesome-config
 ==============
 
 These are my configuration files for the awesome window manager (awesomewm).
-It is written for version > 3.5.
+It is written for version > ~4.0 (I only verified against version 4.3).
 
-For now it is an import of a config working on a 1yr old Gentoo Linux
-installation. I will test and debug soonish :)
-Theoretically the config should work for both FreeBSD and Linux.
+It basically is customization of a config I found at https://github.com/garyparrot/dotfiles.
+The config is still in kind of a rough state, with "only" a custom system tray list and a couple of goodies applied.
+This is still in need of love regarding custom key bindings I guess and a proper cleanup. Who knows wether or not I
+will touch it ever again .... :D
+This config has been tested on Manjaro Linux, but theoretically should work for both FreeBSD and Linux in general.
 
-It is still work in progress but feel free to use it.
-Bug reports / patches are wellcome ;)
+It is still work in progress but feel free to use it ;)
+
+Installation
+------------
+
+* Put all the files into the ~/.config/awesome
+* For the CPU & RAM widgets to work, clone the https://github.com/streetturtle/awesome-wm-widgets.git repository into
+  the `awesome-wm-widgets` directory
+* you will need the following applications installed for all the widgets & functionalities to work properly:
+  * compton
+  * nm-applet
+  * blueman-applet
+  * pasystray
+  * xfce4-power-manager
+  * xfce4-clipman
+  * xscreensaver
 
