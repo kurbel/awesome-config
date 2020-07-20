@@ -32,12 +32,15 @@ local has_fdo, freedesktop = pcall(require, "freedesktop")
 -- xrandr
 local xrandr = require("xrandr")
 -- local bctl = require("brightctrl")
-local battery_widget = require("battery-widget")
-local battery = require("battery")
-local sound_control = require("amixer_widget")
-local volumeWidget = require('volume')
-local cpuWidget = require('awesome-wm-widgets.cpu-widget.cpu-widget')
-local ramWidget = require('awesome-wm-widgets.ram-widget.ram-widget')
+--local battery_widget = require("battery-widget")
+--local battery = require("battery")
+--local volumeWidget = require('volume')
+local cpuWidget = require('awesome-wm-widgets/cpu-widget/cpu-widget')
+local ramWidget = require('awesome-wm-widgets/ram-widget/ram-widget')
+local brightnessWidged = require('awesome-wm-widgets/brightness-widget/brightness')
+
+-- load pulseaudio widget
+local APW = require("apw/widget")
 
 local autorun = true
 local autorunApps = {
@@ -47,12 +50,12 @@ local autorunApps = {
     -- bluetooth system tray (you never know when you might need it)
     "bash -c 'pgrep blueman-applet || /usr/bin/python /usr/bin/blueman-applet'",
     -- sound system tray for pulse audio - use mouse wheel over the icon to adjust volume
-    "bash -c 'pgrep pasystray || pasystray'",
+    "bash -c 'pgrep pasystray || pasystray --notify=all'",
     -- trays borrowed from xfce because they just work (tm)
     "bash -c 'pgrep xfce4-power-manager || xfce4-power-manager'",
     "bash -c 'pgrep xfce4-clipman || xfce4-clipman'",
     -- start the xscreensaver daemon in the backround
-    "bash -c 'pgrep xscreensaver || xscreensaver -no-splash'"--,
+    -- "bash -c 'pgrep xscreensaver || xscreensaver -no-splash'"--,
     -- "bash -c 'pgrep conky || conky'"
 }
 
@@ -68,6 +71,10 @@ end
 local rofiTranslate = function()
     awful.spawn("rofi_trans")
 end
+
+APWTimer = timer({ timeout = 1}) -- set update interval in s
+APWTimer:connect_signal("timeout", APW.Update)
+APWTimer:start()
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -381,23 +388,20 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             { widget = wibox.container.margin, left = 5 },
             wibox.widget.systray(),
+            brightnessWidged(),
             { widget = wibox.container.margin, left = 5 },
             {
                 layout = wibox.layout.fixed.horizontal,
                 spacing = -10,
-                -- powerlineWrapper(volumeWidget(), -1, beautiful.status_bar_bg),
-                -- powerlineWrapper(sound_control(), -1, beautiful.status_bar_bg),
-                -- powerlineWrapper(battery{}, -1, beautiful.status_bar_bg),
-                -- powerlineWrapper(battery_widget {}, -1, beautiful.status_bar_bg),
                 powerlineWrapper(cpuWidget(), -1, beautiful.status_bar_bg),
                 powerlineWrapper(ramWidget(), -1, beautiful.status_bar_bg),
+                -- powerlineWrapper(APW, -1, beautiful.status_bar_bg),
                 powerlineWrapper(mytextclock, -1, beautiful.status_bar_bg),
             },
             { widget = wibox.container.margin, left = 5 },
             s.mylayoutbox,
         },
     }
-    print(sound_control())
 end)
 -- }}}
 
@@ -411,13 +415,16 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
-    awful.key({ modkey, "Mod1" }, "l", function() awful.spawn("xscreensaver-command -lock") end,
+    awful.key({ modkey, "Mod1" }, "l", function() awful.spawn("dm-tool lock") end,
               {description="鎖定螢幕", group = "screen"}),
     awful.key({ modkey, "Control"}, "F1", function() xrandr.xrandr() end),
-    awful.key({}, "#122", function() awful.spawn("amixer -q set Master 5dB-") end,
-              {description="降低音量", group = "Function"}),
-    awful.key({}, "#123", function() awful.spawn("amixer -q set Master 5dB+") end,
-              {description="提升音量", group = "Function"}),
+    awful.key({ }, "XF86AudioRaiseVolume",  APW.Up),
+    awful.key({ }, "XF86AudioLowerVolume",  APW.Down),
+    awful.key({ }, "XF86AudioMute",         APW.ToggleMute),
+    -- awful.key({}, "#122", function() awful.spawn("amixer -q set Master 5dB-") end,
+    --           {description="降低音量", group = "Function"}),
+    -- awful.key({}, "#123", function() awful.spawn("amixer -q set Master 5dB+") end,
+    --           {description="提升音量", group = "Function"}),
     -- awful.key({"Shift"}, "#233", function() bctl.inc_percent(5) end,
     --           {description="微微提升Display亮度", group = "Function"}),
     -- awful.key({"Shift"}, "#232", function() bctl.dec_percent(5) end,
@@ -477,7 +484,7 @@ globalkeys = gears.table.join(
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey, }, "g", function() awful.spawn("firefox") end,
               {description = "start chrome", group = "launcher"}),
-    awful.key({ modkey, }, "i", function() awful.spawn("iceweasel") end,
+    awful.key({ modkey, }, "i", function() awful.spawn("chromium") end,
               {description = "start chrome", group = "launcher"}),
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
@@ -792,3 +799,10 @@ if autorun then
         awful.spawn(autorunApps[app])
     end
 end
+
+awful.spawn("thunderbird", {
+    tag = "1",
+})
+awful.spawn("signal-desktop", {
+    tag = "1",
+})

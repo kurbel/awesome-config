@@ -16,8 +16,10 @@ Installation
 ------------
 
 * Put all the files into the ~/.config/awesome
-* For the CPU & RAM widgets to work, clone the https://github.com/streetturtle/awesome-wm-widgets.git repository into
-  the `awesome-wm-widgets` directory
+* For the CPU, RAM  and brightnes widgets to work, clone the https://github.com/streetturtle/awesome-wm-widgets.git
+  repository into your `$XDG_CONFIG_HOME/awesome/widgets/` directory
+* For the media control buttons (volume up/down, mute) to work with pulseaudio control, clone
+  https://github.com/mokasin/apw.git into your `$XDG_CONFIG_HOME/awesome/widgets/` directory
 * you will need the following applications installed for all the widgets & functionalities to work properly:
   * compton
   * nm-applet
